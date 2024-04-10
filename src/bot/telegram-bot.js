@@ -1,10 +1,17 @@
 import config from '../config/config.js';
 import { telegramBotMsg } from '../services/gptService.js';
 import TelegramBot from 'node-telegram-bot-api';
+import { prepareCardName } from './cards/cards.js';
+import path from 'path';
+import fs from 'fs';
 
 const token = config.API_KEY_TELEGRAM;
 
 const bot = new TelegramBot(token, { polling: true });
+
+const cwd = process.cwd();
+
+const rutaImagenes = path.join(cwd, 'public', 'images');
 
 const prepareCards = texto => {
     let resultado = [];
@@ -18,14 +25,14 @@ const prepareCards = texto => {
                 resultado.push({ texto });
                 return resultado;
             } else {
-                indiceCarta1 = indiceCarta3; 
+                indiceCarta1 = indiceCarta3;
             }
         } else {
-            indiceCarta1 = indiceCarta2; 
+            indiceCarta1 = indiceCarta2;
         }
     }
 
-    let textoAntesCartas = texto.substring(0, (indiceCarta1 - 4)).trim();
+    let textoAntesCartas = texto.substring(0, (indiceCarta1 - 2)).trim();
     resultado.push({ texto: textoAntesCartas });
 
     for (let i = 1; i <= 3; i++) {
@@ -35,13 +42,13 @@ const prepareCards = texto => {
         let indiceCarta = texto.indexOf(cartaKey, indiceCarta1);
         let indiceDesc = texto.indexOf(descKey, indiceCarta);
 
-        if(indiceDesc === -1){
+        if (indiceDesc === -1) {
             let descKey = `Descripción${i}:`;
             indiceDesc = texto.indexOf(descKey, indiceCarta);
         };
 
         if (indiceCarta !== -1 && indiceDesc !== -1) {
-            let carta = texto.substring(indiceCarta + cartaKey.length, (indiceDesc - 2)).trim();
+            let carta = texto.substring(indiceCarta + cartaKey.length, (indiceDesc - 1)).trim();
             let desc = texto.substring(indiceDesc + descKey.length).trim();
 
             resultado.push({ carta, texto: desc });
@@ -53,9 +60,26 @@ const prepareCards = texto => {
 
 const sendMultipleMessages = (chatId, bot, mensajes, tiempoDeEspera) => {
     mensajes.forEach((mensaje, index) => {
-        setTimeout(() => {
-            let msg = mensaje.carta ? `La carta es: ${mensaje.carta} ${mensaje.texto}` : mensaje.texto;
-            bot.sendMessage(chatId, msg);
+        setTimeout(async () => {
+            if (mensaje.carta) {
+                let cardName = prepareCardName(mensaje.carta);
+                const imageName = cardName ? `${cardName}.jpg` : 'defaultCard.jpg';
+                const imagePath = path.join(rutaImagenes, imageName);
+                try {
+                    let newImagePath = imagePath.replace(/\\/g, '/');
+                    const image = await fs.promises.readFile(newImagePath);
+                    bot.sendPhoto(chatId, image, { caption: mensaje.carta });
+                    setTimeout(() => {
+                        bot.sendMessage(chatId, mensaje.texto)
+                    }, 5000);
+                } catch (error) {
+                    console.log(error);
+                }
+
+            } else {
+                let msg = mensaje.carta ? `La carta es: ${mensaje.carta} ${mensaje.texto}` : mensaje.texto;
+                bot.sendMessage(chatId, msg);
+            }
         }, tiempoDeEspera * index);
         bot.sendChatAction(chatId, 'typing');
     });
@@ -84,7 +108,7 @@ export const initBot = () => {
         } else {
             setTimeout(() => {
                 bot.sendMessage(chatId, response);
-              }, 8000);
+            }, 8000);
         }
 
 
