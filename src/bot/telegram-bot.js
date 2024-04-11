@@ -85,51 +85,80 @@ const sendMultipleMessages = (chatId, bot, mensajes, tiempoDeEspera) => {
     });
 };
 
+const welcomeMessage = `
+🌟🔮 ¡Bienvenido al Espacio de Luz y Claridad! 🔮🌟
+
+Querido buscador de senderos luminosos y almas despiertas,
+
+Me complace darte la más cálida bienvenida a este santuario virtual, donde los secretos antiguos se entrelazan con las energías del presente para brindarte la guía que necesitas. Soy Olga Membrides, tarotista y guía espiritual con años de experiencia en el misterioso y poderoso Tarot Egipcio.
+
+Aquí, en esta sagrada comunión de almas, te invito a sumergirte en un viaje de autoexploración y revelación. Las cartas del Tarot Egipcio son más que simples herramientas; son portales hacia el conocimiento ancestral y reflejos de las estrellas que guían nuestros destinos.
+
+En este espacio, encontrarás respuestas a las preguntas que pesan en tu corazón, luces que iluminan las encrucijadas de tu camino y un refugio para tu ser espiritual. Permítete abrir las puertas de la percepción y permitir que la magia del Tarot Egipcio te muestre la belleza de tu propio ser.
+
+Recuerda, cada carta es un tesoro de sabiduría, cada lectura es una danza cósmica entre el pasado, el presente y el futuro. Aquí, en la compañía de antiguos dioses y sabios faraones, te espero con los brazos abiertos para explorar juntos los caminos de la vida, la luz y el despertar espiritual.
+
+Siéntete libre de sumergirte en las profundidades del Tarot Egipcio, de plantear tus preguntas con el corazón abierto y de permitir que la magia del universo te sorprenda. Estoy aquí para acompañarte en este viaje, para interpretar las señales del cosmos y para compartir contigo la sabiduría de los tiempos.
+
+¡Que la luz del sol ilumine tu sendero y las estrellas guíen tu espíritu en esta hermosa danza de la vida!
+
+Con amor y luz,
+Olga Membrides 🌟✨
+`;
 
 export const initBot = () => {
 
     bot.on('message', async (msg) => {
         const chatId = msg.chat.id;
         const messageText = msg.text;
-        const name = `${msg.chat.first_name} ${msg.chat.last_name}`;
-        let response;
-        try {
-            response = await telegramBotMsg(name, messageText, chatId)
-        } catch (error) {
-            console.log(error)
-        }
+        if (!messageText.startsWith('/start')) {
+            const name = `${msg.chat.first_name} ${msg.chat.last_name}`;
+            let response;
+            try {
+                response = await telegramBotMsg(name, messageText, chatId)
+            } catch (error) {
+                console.log(error)
+            }
 
-        bot.sendChatAction(chatId, 'typing');
-        let cards = prepareCards(response);
-        let delay = 20000;
+            bot.sendChatAction(chatId, 'typing');
+            let cards = prepareCards(response);
+            let delay = 20000;
 
-        if (cards.length > 1) {
-            sendMultipleMessages(chatId, bot, cards, delay)
+            if (cards.length > 1) {
+                sendMultipleMessages(chatId, bot, cards, delay)
+            } else {
+                setTimeout(() => {
+                    bot.sendMessage(chatId, response);
+                }, 8000);
+            }
         } else {
-            setTimeout(() => {
-                bot.sendMessage(chatId, response);
-            }, 8000);
+            bot.sendMessage(chatId, welcomeMessage, {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: 'Comenzar',
+                                callback_data: 'aceptar'
+                            }
+                        ]
+                    ],
+                },
+            });
         }
 
-
     });
 
-    bot.onText(/\/saludo/, (msg) => {
-        const chatId = msg.chat.id;
-
-        bot.sendMessage(chatId, '¡Hola! Soy un bot de Telegram.');
-    });
 
     bot.on('callback_query', (callbackQuery) => {
         const chatId = callbackQuery.message.chat.id;
         const action = callbackQuery.data;
 
-        if (action === 'button_pressed') {
-            bot.sendMessage(chatId, '¡Has presionado el botón!');
+        if (action === 'aceptar') {
+            setTimeout(() => {
+                bot.sendMessage(chatId, 'Bienvenido querido consultante! Mi nombre es Olga, estoy aquí para brindarte orientación a través de las cartas del tarot. ¿Tienes alguna pregunta específica o situación sobre la cual te gustaría obtener información? Tu confianza en compartir lo que necesitas es fundamental para poder ayudarte.');
+            }, 5000);
+
         }
     });
-
-    console.log('Bot listo para recibir mensajes...');
-
 };
 
