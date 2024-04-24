@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import gptRouter from './src/routes/gptRouter.js';
+import stripeRouter from './src/routes/stripeRouter.js';
 import config from './src/config/config.js';
 import { initBot } from './src/bot/telegram-bot.js';
 
@@ -15,5 +16,6 @@ app.use(express.urlencoded({extended: true}))
 initBot()
 
 app.use('/gpt', gptRouter);
+app.use('/stripe', stripeRouter)
 
 const server = app.listen(PORT, () => console.log(`Server running on port: ${server.address().port}`))

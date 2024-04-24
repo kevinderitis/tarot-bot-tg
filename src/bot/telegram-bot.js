@@ -1,13 +1,17 @@
 import config from '../config/config.js';
 import { telegramBotMsg } from '../services/gptService.js';
+import { mainTelegramBotMsg } from '../services/gptMainService.js';
 import TelegramBot from 'node-telegram-bot-api';
 import { prepareCardName } from './cards/cards.js';
+import { createPaymentPreference } from '../services/stripeService.js';
 import path from 'path';
 import fs from 'fs';
 
 const token = config.API_KEY_TELEGRAM;
+const mainToken = config.MAIN_API_KEY_TELEGRAM;
 
 const bot = new TelegramBot(token, { polling: true });
+const mainBot = new TelegramBot(mainToken, { polling: true });
 
 const cwd = process.cwd();
 
@@ -106,7 +110,43 @@ Con amor y luz,
 Olga Membrides 🌟✨
 `;
 
+const verifyLink = async (text, chatId) => {
+    const pattern = /https:\/\/www\.linkdepago\.com\/pagar/;
+
+    if (text.match(pattern)) {
+        let paymentPreference = await createPaymentPreference(chatId);
+        return `¡Perfecto! Para proceder con el pago y realizar la tirada de cartas de tarot, puedes hacerlo a través del siguiente enlace de pago seguro: ${paymentPreference.url}. Una vez realizada la transacción, avísame para verificar la confirmación del pago y así proceder con la tirada de cartas de tarot. Estoy aquí para brindarte orientación y claridad en este momento. ¿Hay alguna otra pregunta o aclaración que necesites antes de continuar?`;
+    } else {
+        return text;
+    }
+}
+
+export const notifyPayment = async chatId => {
+    try {
+        let msg = 'Ya recibimos tu pago. Comunicate con Olga para tu tirada de cartas: https://web.telegram.org/k/#@Tarotardobot'
+        await mainBot.sendMessage(chatId, msg);
+    } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+        throw error;
+    }
+};
+
+
 export const initBot = () => {
+
+    mainBot.on('message', async (msg) => {
+        const chatId = msg.chat.id;
+        const messageText = msg.text;
+        const name = `${msg.chat.first_name} ${msg.chat.last_name}`;
+        let response;
+        try {
+            response = await mainTelegramBotMsg(name, messageText, chatId)
+            let msgText = await verifyLink(response, chatId);
+            mainBot.sendMessage(chatId, msgText);
+        } catch (error) {
+            console.log(error)
+        }
+    });
 
     bot.on('message', async (msg) => {
         const chatId = msg.chat.id;
