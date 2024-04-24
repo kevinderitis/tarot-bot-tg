@@ -6,6 +6,7 @@ import { prepareCardName } from './cards/cards.js';
 import { createPaymentPreference } from '../services/stripeService.js';
 import path from 'path';
 import fs from 'fs';
+import { getLeadByChatId } from '../dao/leadDAO.js';
 
 const token = config.API_KEY_TELEGRAM;
 const mainToken = config.MAIN_API_KEY_TELEGRAM;
@@ -151,6 +152,7 @@ export const initBot = () => {
     bot.on('message', async (msg) => {
         const chatId = msg.chat.id;
         const messageText = msg.text;
+
         if (!messageText.startsWith('/start')) {
             const name = `${msg.chat.first_name} ${msg.chat.last_name}`;
             let response;

@@ -13,6 +13,9 @@ const leadSchema = new mongoose.Schema({
   chatId: {
     type: String,
     unique: true,
+  },
+  payment: {
+    type: Boolean
   }
 });
 
