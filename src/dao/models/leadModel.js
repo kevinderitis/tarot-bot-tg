@@ -15,7 +15,8 @@ const leadSchema = new mongoose.Schema({
     unique: true,
   },
   payment: {
-    type: Boolean
+    type: Boolean,
+    default: false
   }
 });
 

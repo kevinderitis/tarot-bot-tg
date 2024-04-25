@@ -3,7 +3,8 @@ import { telegramBotMsg } from '../services/gptService.js';
 import { mainTelegramBotMsg } from '../services/gptMainService.js';
 import TelegramBot from 'node-telegram-bot-api';
 import { prepareCardName } from './cards/cards.js';
-import { createPaymentPreference } from '../services/stripeService.js';
+// import { createPaymentPreference } from '../services/stripeService.js';
+import { createPaymentPreference } from '../services/mpService.js';
 import path from 'path';
 import fs from 'fs';
 import { getLeadByChatId } from '../dao/leadDAO.js';
@@ -116,7 +117,7 @@ const verifyLink = async (text, chatId) => {
 
     if (text.match(pattern)) {
         let paymentPreference = await createPaymentPreference(chatId);
-        return `¡Perfecto! Para proceder con el pago y realizar la tirada de cartas de tarot, puedes hacerlo a través del siguiente enlace de pago seguro: ${paymentPreference.url}. Una vez realizada la transacción, avísame para verificar la confirmación del pago y así proceder con la tirada de cartas de tarot. Estoy aquí para brindarte orientación y claridad en este momento. ¿Hay alguna otra pregunta o aclaración que necesites antes de continuar?`;
+        return `¡Perfecto! Para proceder con el pago y realizar la tirada de cartas de tarot, puedes hacerlo a través del siguiente enlace de pago seguro: ${paymentPreference}. Una vez realizada la transacción, avísame para verificar la confirmación del pago y así proceder con la tirada de cartas de tarot. Estoy aquí para brindarte orientación y claridad en este momento. ¿Hay alguna otra pregunta o aclaración que necesites antes de continuar?`;
     } else {
         return text;
     }
