@@ -1,4 +1,5 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import axios from 'axios';
 import config from '../config/config.js';
 
 const client = new MercadoPagoConfig({ accessToken: config.MERCADOPAGO_ACCESS_TOKEN });
@@ -13,16 +14,8 @@ export const createPaymentPreference = async chatId => {
                     unit_price: 3000,
                     quantity: 1
                 }],
-                payment_methods: {
-                    excluded_payment_methods: [
-                        { id: 'amex' }
-                    ],
-                    excluded_payment_types: [
-                        { id: 'atm' }
-                    ]
-                },
                 external_reference: chatId,
-                notification_url: 'localhost:8080/stripe/webhook'
+                notification_url: 'https://webhook.site/4220f566-1089-41d4-ad5d-244d47d39851'
             }
         });
 
@@ -32,3 +25,14 @@ export const createPaymentPreference = async chatId => {
         throw new Error('Error al procesar la solicitud');
     }
 };
+
+export const getPaymentByReference = async paymentId => {
+    const url = `https://api.mercadopago.com/v1/payments/${paymentId}?access_token=${config.MERCADOPAGO_ACCESS_TOKEN}`;
+    try {
+        let response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        return null
+    }
+}
