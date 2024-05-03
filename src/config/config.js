@@ -10,7 +10,8 @@ const config = {
     MAIN_API_KEY_TELEGRAM: process.env.MAIN_API_KEY_TELEGRAM,
     MAIN_ASSISTANT_ID: process.env.MAIN_ASSISTANT_ID,
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
-    MERCADOPAGO_ACCESS_TOKEN: process.env.MERCADOPAGO_ACCESS_TOKEN
+    MERCADOPAGO_ACCESS_TOKEN: process.env.MERCADOPAGO_ACCESS_TOKEN,
+    APP_DOMAIN: process.env.APP_DOMAIN
 };
 
 export default config;

@@ -15,7 +15,10 @@ export const createPaymentPreference = async chatId => {
                     quantity: 1
                 }],
                 external_reference: chatId,
-                notification_url: 'https://webhook.site/4220f566-1089-41d4-ad5d-244d47d39851'
+                notification_url: `${config.APP_DOMAIN}/mp/webhook`,
+                back_urls: {
+                    success: "https://web.telegram.org/k/#@TarotEgicpioBot"
+                }
             }
         });
 

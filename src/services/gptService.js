@@ -144,7 +144,7 @@ export const telegramBotMsg = async (name, prompt, chatId) => {
         console.log(`Sending message to ${name}`)
         let lead = await getLeadByChatId(chatId);
         let threadId = lead ? lead.threadId : null;
-        let message = 'Espero que este mensaje te encuentre bien. Quisiera recordarte amablemente que aún no hemos recibido el pago correspondiente por tu consulta de tarot. Valoramos tu interés en buscar orientación y apoyo a través de nuestras lecturas, pero antes de adentrarnos en el maravilloso mundo de las cartas, es importante que completemos el proceso de pago https://web.telegram.org/k/#@TarotEgicpioBot';
+        let message = 'Mensaje automático: Espero que este mensaje te encuentre bien. Quisiera recordarte amablemente que aún no hemos recibido el pago correspondiente por tu consulta de tarot. Valoramos tu interés en buscar orientación y apoyo a través de nuestras lecturas, pero antes de adentrarnos en el maravilloso mundo de las cartas y que este mensaje llegue a nuestra tarotista es importante que completemos el proceso de pago https://web.telegram.org/k/#@TarotEgicpioBot';
         let payment = lead ? lead.payment :  false;
         let response = await sendMessage(prompt, threadId);
         if (payment) {
