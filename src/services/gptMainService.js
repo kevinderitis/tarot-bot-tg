@@ -141,7 +141,7 @@ const validateThread = async (threadId) => {
 
 export const mainTelegramBotMsg = async (name, prompt, chatId) => {
     try {
-        console.log(`Sending message to ${name}`)
+        console.log(`Sending message to ${name} by main telegram bot`)
         let lead = await getLeadByChatId(chatId);
         let threadId = lead ? lead.threadId : null;
         const response = await sendMessage(prompt, threadId);
