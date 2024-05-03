@@ -13,6 +13,7 @@ export class OpenAIError extends Error {
 };
 
 const createAndRun = async (msg) => {
+    console.log(`Assistant id: ${config.ASSISTANT_ID}`)
     try {
         const run = await openai.beta.threads.createAndRun({
             assistant_id: config.ASSISTANT_ID,
@@ -62,6 +63,7 @@ const listMessages = async (threadId) => {
 };
 
 const runThread = async (threadId) => {
+    console.log(`Running thread main assistant id: ${config.ASSISTANT_ID}`)
     try {
         const run = await openai.beta.threads.runs.create(threadId, {
             assistant_id: config.ASSISTANT_ID,
