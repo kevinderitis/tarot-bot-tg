@@ -13,7 +13,7 @@ db.once('open', () => {
 });
 
 
-const createLead = async (mainThreadId, threadId, name, chatId) => {
+const createLead = async (mainThreadId, name, chatId) => {
   try {
     let existingLead = await Lead.findOne({ chatId });
 
