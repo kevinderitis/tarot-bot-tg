@@ -125,7 +125,7 @@ const verifyLink = async (text, chatId) => {
 
 export const notifyPayment = async chatId => {
     try {
-        let msg = 'Ya recibimos tu pago. Comunicate con Olga para tu tirada de cartas: https://web.telegram.org/k/#@OlgaMembridesTarbot'
+        let msg = 'Ya recibimos tu pago. Comunicate con Olga para tu tirada de cartas: @OlgaMembridesTarbot'
         await mainBot.sendMessage(chatId, msg);
     } catch (error) {
         console.error('Error al enviar el mensaje:', error);

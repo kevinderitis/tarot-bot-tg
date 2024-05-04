@@ -3,7 +3,10 @@ import mongoose from 'mongoose';
 const leadSchema = new mongoose.Schema({
   threadId: {
     type: String,
-    required: true,
+    unique: true,
+  },
+  mainThreadId: {
+    type: String,
     unique: true,
   },
   name: {

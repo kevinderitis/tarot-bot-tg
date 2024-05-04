@@ -13,13 +13,13 @@ db.once('open', () => {
 });
 
 
-const createLead = async (threadId, name, chatId) => {
+const createLead = async (mainThreadId, threadId, name, chatId) => {
   try {
     let existingLead = await Lead.findOne({ chatId });
 
     if (!existingLead) {
       const newLead = new Lead({
-        threadId,
+        mainThreadId,
         name,
         chatId
       });
@@ -110,6 +110,26 @@ const updateLeadPaymentByChatId = async (chatId, payment) => {
   }
 };
 
+const updateLeadByMainThreadId = async (chatId, threadId) => {
+  try {
+    const lead = await Lead.findOne({ chatId });
+
+    if (!lead) {
+      throw new Error('Lead no encontrado');
+    }
+
+    lead.threadId = threadId;
+
+    await lead.save();
+
+    console.log('Lead actualizado:', lead);
+    return lead;
+  } catch (error) {
+    console.error('Error al actualizar lead por chatId:', error.message);
+    throw new Error('No se pudo actualizar el lead');
+  }
+};
+
 const deleteLeadById = async (leadId) => {
   try {
     const deletedLead = await Lead.findByIdAndDelete(leadId);
@@ -124,4 +144,4 @@ const deleteLeadById = async (leadId) => {
   }
 };
 
-export { createLead, getAllLeads, getLeadById, updateLeadById, deleteLeadById, getLeadByChatId, updateLeadPaymentByChatId };
+export { createLead, getAllLeads, getLeadById, updateLeadById, deleteLeadById, getLeadByChatId, updateLeadPaymentByChatId, updateLeadByMainThreadId };
