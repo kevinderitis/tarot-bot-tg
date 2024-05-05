@@ -20,6 +20,9 @@ const leadSchema = new mongoose.Schema({
   payment: {
     type: Boolean,
     default: false
+  },
+  paymentDate: {
+    type: Date
   }
 });
 

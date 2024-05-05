@@ -118,7 +118,10 @@ const updateLeadByMainThreadId = async (chatId, threadId) => {
       throw new Error('Lead no encontrado');
     }
 
+    const currentDate = new Date();
+
     lead.threadId = threadId;
+    lead.paymentDate = currentDate;
 
     await lead.save();
 
@@ -144,4 +147,17 @@ const deleteLeadById = async (leadId) => {
   }
 };
 
-export { createLead, getAllLeads, getLeadById, updateLeadById, deleteLeadById, getLeadByChatId, updateLeadPaymentByChatId, updateLeadByMainThreadId };
+const updateManyPayments = async hour => {
+  try {
+    const result = await Lead.updateMany(
+      { payment: true, paymentDate: { $lt: hour } },
+      { $set: { payment: false } }
+    );
+    return result;
+  } catch (error) {
+    console.error('Error al actualizar payments:', error.message);
+    throw new Error('No se pudieron actualizar lead payments');
+  }
+};
+
+export { createLead, getAllLeads, getLeadById, updateLeadById, deleteLeadById, getLeadByChatId, updateLeadPaymentByChatId, updateLeadByMainThreadId, updateManyPayments };

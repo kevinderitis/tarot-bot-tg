@@ -11,7 +11,8 @@ const config = {
     MAIN_ASSISTANT_ID: process.env.MAIN_ASSISTANT_ID,
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     MERCADOPAGO_ACCESS_TOKEN: process.env.MERCADOPAGO_ACCESS_TOKEN,
-    APP_DOMAIN: process.env.APP_DOMAIN
+    APP_DOMAIN: process.env.APP_DOMAIN,
+    PAYMENTS_CRON: process.env.PAYMENTS_CRON
 };
 
 export default config;
