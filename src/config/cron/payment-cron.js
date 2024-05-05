@@ -16,4 +16,7 @@ const executePaymentsCron = async () => {
     }
 };
 
-cron.schedule(config.PAYMENTS_CRON, executePaymentsCron);
+export const startPaymentsCron = () => {
+    cron.schedule(config.PAYMENTS_CRON, executePaymentsCron);
+    console.log(`Started cron: ${config.PAYMENTS_CRON}`)
+};
