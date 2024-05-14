@@ -113,9 +113,10 @@ Olga Membrides 🌟✨
 `;
 
 const verifyLink = async (text, chatId) => {
-    const pattern = /https:\/\/www\.linkdepago\.com\/pagar/;
+    const pattern = /https:\/\/www\.linkdepago\.com/;
+    const pattern2 = /https:\/\/www\.linkdeconexionconOlga\.com/;
 
-    if (text.match(pattern)) {
+    if (text.match(pattern) || text.match(pattern2)) {
         let paymentPreference = await createPaymentPreference(chatId);
         return `¡Perfecto! Para proceder con el pago y realizar la tirada de cartas de tarot, puedes hacerlo a través del siguiente enlace de pago seguro: ${paymentPreference}. Una vez realizada la transacción, avísame para verificar la confirmación del pago y así proceder con la tirada de cartas de tarot. Estoy aquí para brindarte orientación y claridad en este momento. ¿Hay alguna otra pregunta o aclaración que necesites antes de continuar?`;
     } else {
